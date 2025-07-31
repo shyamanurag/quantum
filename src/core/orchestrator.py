@@ -152,7 +152,7 @@ class TradingOrchestrator:
             "active_strategies_count": len([name for name, strategy in self.strategies.items() if strategy.get("active", False)]),
             "active_positions": await self._get_real_active_positions(),
             "total_trades": sum(strategy.get("performance", {}).get("trades", 0) for strategy in self.strategies.values()),
-            "daily_pnl": await self._get_real_daily_pnl()
+            "daily_pnl": await self._get_real_daily_pnl(),
             "risk_status": {"status": "normal"},
             "market_status": "ACTIVE",
             "system_ready": self.is_initialized and self.is_running,
