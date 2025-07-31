@@ -477,7 +477,8 @@ class EnhancedCryptoVolatilityExplosion:
             
             async with get_db_session() as session:
                 # Get active volatile symbols from database
-                result = await session.execute("""
+                from sqlalchemy import text
+                result = await session.execute(text("""
                     SELECT symbol, 
                            AVG(ABS((high_price - low_price) / close_price)) as volatility
                     FROM crypto_market_data 
@@ -487,7 +488,7 @@ class EnhancedCryptoVolatilityExplosion:
                     HAVING COUNT(*) >= 100  -- Minimum data points
                     ORDER BY volatility DESC
                     LIMIT 5
-                """)
+                """))
                 
                 symbol_rows = result.fetchall()
                 if not symbol_rows:

@@ -178,13 +178,14 @@ class CryptoRegimeAdaptiveController:
             from ..core.database import get_db_session
             
             async with get_db_session() as session:
-                result = await session.execute("""
+                from sqlalchemy import text
+                result = await session.execute(text("""
                     SELECT (btc_market_cap / total_market_cap) * 100 as btc_dominance
                     FROM market_cap_data 
                     WHERE timestamp >= NOW() - INTERVAL '1 hour'
                     ORDER BY timestamp DESC
                     LIMIT 1
-                """)
+                """))
                 
                 row = result.fetchone()
                 if row and row.btc_dominance:
@@ -203,13 +204,13 @@ class CryptoRegimeAdaptiveController:
             from ..core.database import get_db_session
             
             async with get_db_session() as session:
-                result = await session.execute("""
+                result = await session.execute(text("""
                     SELECT fear_greed_value
                     FROM market_sentiment_data 
                     WHERE timestamp >= NOW() - INTERVAL '1 hour'
                     ORDER BY timestamp DESC
                     LIMIT 1
-                """)
+                """))
                 
                 row = result.fetchone()
                 if row and row.fear_greed_value:
@@ -228,12 +229,12 @@ class CryptoRegimeAdaptiveController:
             from ..core.database import get_db_session
             
             async with get_db_session() as session:
-                result = await session.execute("""
+                result = await session.execute(text("""
                     SELECT AVG((close_price - open_price) / open_price) as trend
                     FROM crypto_market_data 
                     WHERE timestamp >= NOW() - INTERVAL '24 hours'
                     AND close_price > 0 AND open_price > 0
-                """)
+                """))
                 
                 row = result.fetchone()
                 if row and row.trend is not None:

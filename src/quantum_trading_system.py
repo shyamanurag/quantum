@@ -176,7 +176,13 @@ class QuantumTradingSystem:
         logger.info(f"   System: {self.config.get('system', {}).get('name', 'Unknown')}")
         logger.info(f"   Version: {self.config.get('system', {}).get('version', 'Unknown')}")
         logger.info(f"   Environment: {self.config.get('system', {}).get('environment', 'Unknown')}")
-        logger.info(f"   Trading Enabled: {self.config.get('trading', {}).get('enabled', False)}")
+        trading_enabled = self.config.get('trading', {}).get('enabled', False)
+        logger.info(f"   Trading Enabled: {trading_enabled}")
+        
+        if not trading_enabled:
+            logger.error("❌ CRITICAL: Real trading is DISABLED")
+            logger.error("❌ System running in paper mode only")
+            logger.error("❌ No real money trades will execute")
     
     async def _log_system_status(self):
         """Log current system status"""
