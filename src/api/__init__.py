@@ -27,7 +27,8 @@ from . import (
     simple_daily_auth,
     strategy_management,
     performance,
-    recommendations
+    recommendations,
+    digital_ocean_logs  # Added real-time log monitoring
 )
 
 # Create main API router
@@ -62,5 +63,8 @@ api_router.include_router(simple_daily_auth.router, prefix="/simple-auth", tags=
 api_router.include_router(strategy_management.router, prefix="/strategies", tags=["Strategy Management"])
 api_router.include_router(performance.router, prefix="/performance", tags=["Performance"])
 api_router.include_router(recommendations.router, prefix="/recommendations", tags=["Recommendations"])
+
+# Include Digital Ocean logs monitoring API  
+api_router.include_router(digital_ocean_logs.router, prefix="/do-logs", tags=["Digital Ocean Logs"])
 
 __all__ = ["api_router"]
