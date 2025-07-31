@@ -12,9 +12,6 @@ logger = logging.getLogger(__name__)
 
 class PositionManager:
     """REAL Position Manager based on working shares app implementation"""
-
-# Alias for compatibility with API imports
-ProductionPositionManager = PositionManager
     
     def __init__(self, config=None):
         self.config = config or {}
