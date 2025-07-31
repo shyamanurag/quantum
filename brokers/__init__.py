@@ -1,11 +1,10 @@
 """
-Broker integrations for trading operations
+Crypto exchange integrations for trading operations
 """
 
-from .zerodha import ZerodhaIntegration
-from .resilient_zerodha import ResilientZerodhaConnection
+# Crypto exchanges are now handled via the main src/data/binance_client.py
+# and src/api/crypto_market_data.py modules for better organization
 
 __all__ = [
-    'ZerodhaIntegration',
-    'ResilientZerodhaConnection'
+    # Crypto integrations moved to src/data/ and src/api/ modules
 ] 

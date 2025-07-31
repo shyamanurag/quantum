@@ -1,0 +1,38 @@
+name: quantum-crypto-trading
+services:
+- name: trading-app
+  source_dir: /
+  github:
+    repo: shyamanurag/quantum
+    branch: main
+  run_command: uvicorn app:app --host 0.0.0.0 --port $PORT --workers 2
+  environment_slug: python
+  instance_count: 1
+  instance_size_slug: professional-xs
+  http_port: 8080
+  health_check:
+    http_path: /health
+    initial_delay_seconds: 30
+    period_seconds: 10
+    timeout_seconds: 5
+    success_threshold: 1
+    failure_threshold: 3
+  envs:
+  - key: ENVIRONMENT
+    value: production
+  - key: DEPLOYMENT_MODE  
+    value: production
+  - key: TRADING_MODE
+    value: paper
+  - key: PAPER_TRADING
+    value: "true"
+  - key: ENABLE_AUTONOMOUS_TRADING
+    value: "true"
+  - key: BINANCE_TESTNET
+    value: "true"
+  - key: API_HOST
+    value: "0.0.0.0"
+  - key: DEBUG
+    value: "false"
+  - key: LOG_LEVEL
+    value: INFO

@@ -32,14 +32,14 @@ app:
   environment: "development"
   log_level: "INFO"
 
-brokers:
-  zerodha:
-    api_key: vc9ft4zpknynpm3u
-    api_secret: 0nwjb2cncw9stf3m5cre73rqc3bc5xsc
-    base_url: https://api.kite.trade
-    name: zerodha
-    rate_limit_per_minute: 60
-    sandbox_mode: false
+crypto_exchanges:
+  binance:
+    api_key: your_binance_api_key
+    api_secret: your_binance_api_secret
+    base_url: https://testnet.binance.vision
+    name: binance
+    rate_limit_per_minute: 1200
+    testnet_mode: true
     timeout_seconds: 30
 compliance:
   # Trading Rate Limits

@@ -1,0 +1,169 @@
+# ============================================================
+# DIGITAL OCEAN PRODUCTION ENVIRONMENT VARIABLES
+# Quantum Crypto Trading System - Ready for DO Deployment
+# ============================================================
+
+# =====================================
+# DATABASE CONFIGURATION (DO Managed)
+# =====================================
+DATABASE_URL=postgresql://doadmin:AVNS_8hBXKk-VUdKxoy9IVNB@quantum-do-user-23093341-0.g.db.ondigitalocean.com:25060/defaultdb?sslmode=require
+DB_HOST=quantum-do-user-23093341-0.g.db.ondigitalocean.com
+DB_PORT=25060
+DB_NAME=defaultdb
+DB_USER=doadmin
+DB_PASSWORD=AVNS_8hBXKk-VUdKxoy9IVNB
+DB_SSL_MODE=require
+
+# =====================================
+# REDIS CONFIGURATION (DO Managed)
+# =====================================
+REDIS_URL=redis://default:AVNS_XGsjxUE8pWuMIlwOoJa@cachequantum-do-user-23093341-0.g.db.ondigitalocean.com:25061
+REDIS_HOST=cachequantum-do-user-23093341-0.g.db.ondigitalocean.com
+REDIS_PORT=25061
+REDIS_USERNAME=default
+REDIS_PASSWORD=AVNS_XGsjxUE8pWuMIlwOoJa
+
+# =====================================
+# SECURITY CONFIGURATION
+# =====================================
+JWT_SECRET=production-jwt-secret-key-32-characters-minimum-for-security-change-this
+ENCRYPTION_KEY=production-encryption-key-must-be-exactly-32-bytes-change-this
+SECRET_KEY=production-flask-secret-key-for-sessions-security-change-this
+WEBHOOK_SECRET=production-webhook-secret-for-n8n-integration-change-this
+
+# =====================================
+# APPLICATION CONFIGURATION
+# =====================================
+ENVIRONMENT=production
+DEPLOYMENT_MODE=production
+TRADING_MODE=paper
+API_HOST=0.0.0.0
+API_PORT=8000
+API_WORKERS=4
+API_DEBUG=false
+DEBUG=false
+
+# =====================================
+# CRYPTO TRADING CONFIGURATION (PAPER TRADING)
+# =====================================
+PAPER_TRADING=true
+ENABLE_AUTONOMOUS_TRADING=true
+ENABLE_REAL_TIME_DATA=true
+ENABLE_WEBSOCKETS=true
+ENABLE_NOTIFICATIONS=true
+MAX_POSITIONS=10
+MAX_RISK_PER_TRADE=0.02
+MAX_TOTAL_RISK=0.10
+
+# =====================================
+# CRYPTO EXCHANGE API KEYS (SANDBOX MODE)
+# =====================================
+BINANCE_API_KEY=Qezz1H5udZpJt5C2u4l8dBNbncZirzI00giRuymmv9X8FjXCUZi1EoIWqkj2bjN4
+BINANCE_API_SECRET=IsphaTiY7x44JJfwn08RRrGrJ1EzqxE1BxksGYhIAZQb0DZ3TwLLRFFNTgFP3DUR
+BINANCE_TESTNET=true
+
+# =====================================
+# PERFORMANCE CONFIGURATION
+# =====================================
+MAX_WORKERS=4
+POOL_SIZE=20
+MAX_OVERFLOW=30
+POOL_TIMEOUT=30
+TIMEOUT=60
+BATCH_SIZE=500
+QUERY_TIMEOUT=30
+REQUEST_TIMEOUT=60
+
+# =====================================
+# CORS & SECURITY (UPDATE DOMAIN)
+# =====================================
+CORS_ORIGINS=["https://yourdomain.com","https://www.yourdomain.com","https://app.yourdomain.com"]
+TRUSTED_HOSTS=["yourdomain.com","www.yourdomain.com","app.yourdomain.com"]
+
+# =====================================
+# MONITORING CONFIGURATION
+# =====================================
+PROMETHEUS_PORT=9091
+GRAFANA_ADMIN_PASSWORD=secure_grafana_password_2024
+HEALTH_CHECK_INTERVAL=30
+LOG_TO_FILE=true
+LOG_LEVEL=INFO
+ENABLE_METRICS=true
+
+# =====================================
+# BACKUP CONFIGURATION
+# =====================================
+BACKUP_ENABLED=true
+BACKUP_S3_BUCKET=quantum-trading-backups
+AWS_REGION=nyc3
+BACKUP_RETENTION_DAYS=30
+
+# =====================================
+# RATE LIMITING
+# =====================================
+ENABLE_RATE_LIMITING=true
+REQUESTS_PER_MINUTE=1000
+BURST_LIMIT=1500
+
+# =====================================
+# SSL/TLS CONFIGURATION
+# =====================================
+USE_SSL=true
+SSL_CERT_PATH=/app/ssl/cert.pem
+SSL_KEY_PATH=/app/ssl/key.pem
+
+# =====================================
+# DIGITAL OCEAN SPECIFIC
+# =====================================
+DO_REGION=nyc3
+DO_SIZE=s-2vcpu-4gb
+LOAD_BALANCER_ENABLED=true
+CDN_ENABLED=true
+
+# =====================================
+# FEATURE FLAGS
+# =====================================
+ENHANCED_MONITORING=true
+API_VERSIONING=true
+SECURE_AUTHENTICATION=true
+OPTIMIZED_DATABASE=true
+ADVANCED_ERROR_HANDLING=true
+
+# =====================================
+# CACHE CONFIGURATION
+# =====================================
+ENABLE_REDIS_CACHE=true
+CACHE_TTL=300
+CACHE_MAX_CONNECTIONS=20
+
+# =====================================
+# WEBSOCKET CONFIGURATION
+# =====================================
+WS_MAX_CONNECTIONS=1000
+WS_PING_INTERVAL=30
+WS_PING_TIMEOUT=10
+
+# =====================================
+# EMAIL NOTIFICATIONS (OPTIONAL)
+# =====================================
+SMTP_HOST=smtp.digitalocean.com
+SMTP_PORT=587
+SMTP_USER=noreply@yourdomain.com
+SMTP_PASSWORD=your_smtp_password
+EMAIL_FROM=trading@yourdomain.com
+
+# =====================================
+# SENTRY ERROR TRACKING (OPTIONAL)
+# =====================================
+SENTRY_DSN=https://your-sentry-dsn@sentry.io/project-id
+
+# =====================================
+# SLACK NOTIFICATIONS (OPTIONAL)
+# =====================================
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/your/slack/webhook
+
+# =====================================
+# TIMEZONE CONFIGURATION
+# =====================================
+TZ=UTC
+TIMEZONE=UTC

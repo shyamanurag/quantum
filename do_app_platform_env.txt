@@ -1,0 +1,32 @@
+# Digital Ocean App Platform - Bulk Environment Variables
+# Copy and paste into DO App Platform Environment Variables section
+
+DATABASE_URL=postgresql://doadmin:AVNS_8hBXKk-VUdKxoy9IVNB@quantum-do-user-23093341-0.g.db.ondigitalocean.com:25060/defaultdb?sslmode=require
+REDIS_URL=redis://default:AVNS_XGsjxUE8pWuMIlwOoJa@cachequantum-do-user-23093341-0.g.db.ondigitalocean.com:25061
+ENVIRONMENT=production
+DEPLOYMENT_MODE=production
+TRADING_MODE=paper
+API_HOST=0.0.0.0
+API_PORT=8000
+API_WORKERS=4
+DEBUG=false
+JWT_SECRET=production-jwt-secret-key-32-characters-minimum-for-security-change-this
+ENCRYPTION_KEY=production-encryption-key-must-be-exactly-32-bytes-change-this
+SECRET_KEY=production-flask-secret-key-for-sessions-security-change-this
+PAPER_TRADING=true
+ENABLE_AUTONOMOUS_TRADING=true
+ENABLE_REAL_TIME_DATA=true
+ENABLE_WEBSOCKETS=true
+BINANCE_API_KEY=Qezz1H5udZpJt5C2u4l8dBNbncZirzI00giRuymmv9X8FjXCUZi1EoIWqkj2bjN4
+BINANCE_API_SECRET=IsphaTiY7x44JJfwn08RRrGrJ1EzqxE1BxksGYhIAZQb0DZ3TwLLRFFNTgFP3DUR
+BINANCE_TESTNET=true
+CORS_ORIGINS=["https://yourdomain.com","https://www.yourdomain.com"]
+MAX_WORKERS=4
+POOL_SIZE=20
+TIMEOUT=60
+PROMETHEUS_PORT=9091
+LOG_LEVEL=INFO
+ENABLE_RATE_LIMITING=true
+REQUESTS_PER_MINUTE=1000
+USE_SSL=true
+TZ=UTC

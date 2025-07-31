@@ -1,0 +1,92 @@
+# ============================================================
+# PRODUCTION-READY ENVIRONMENT VARIABLES FOR DIGITAL OCEAN
+# Generated with secure keys - Ready for immediate deployment
+# ============================================================
+
+# =====================================
+# DATABASE CONFIGURATION (DO Managed)
+# =====================================
+DATABASE_URL=postgresql://doadmin:AVNS_8hBXKk-VUdKxoy9IVNB@quantum-do-user-23093341-0.g.db.ondigitalocean.com:25060/defaultdb?sslmode=require
+REDIS_URL=redis://default:AVNS_XGsjxUE8pWuMIlwOoJa@cachequantum-do-user-23093341-0.g.db.ondigitalocean.com:25061
+
+# =====================================
+# SECURITY CONFIGURATION (SECURE KEYS)
+# =====================================
+JWT_SECRET=AGadbg1aZwoxmMeiNfhEZ2WnMvi9qOUxMLh7FfldzS6Us8ZtdjwmIjrj0QiOeKIF
+ENCRYPTION_KEY=79c2677563923fb222eba9518d1f52fc
+SECRET_KEY=3FK7OPPvatq8r9acm2zbomQoPc0NaiJwIrPP0POUdijDILnu
+WEBHOOK_SECRET=UXorlbCsJ8FzXpvMTdJUbXDJSXSwAS4dURnVAT4r
+
+# =====================================
+# APPLICATION CONFIGURATION
+# =====================================
+ENVIRONMENT=production
+DEPLOYMENT_MODE=production
+TRADING_MODE=paper
+API_HOST=0.0.0.0
+API_PORT=8000
+API_WORKERS=4
+DEBUG=false
+
+# =====================================
+# CRYPTO TRADING CONFIGURATION (PAPER TRADING)
+# =====================================
+PAPER_TRADING=true
+ENABLE_AUTONOMOUS_TRADING=true
+ENABLE_REAL_TIME_DATA=true
+ENABLE_WEBSOCKETS=true
+ENABLE_NOTIFICATIONS=true
+MAX_POSITIONS=10
+MAX_RISK_PER_TRADE=0.02
+MAX_TOTAL_RISK=0.10
+
+# =====================================
+# CRYPTO EXCHANGE API KEYS (SANDBOX MODE)
+# =====================================
+BINANCE_API_KEY=Qezz1H5udZpJt5C2u4l8dBNbncZirzI00giRuymmv9X8FjXCUZi1EoIWqkj2bjN4
+BINANCE_API_SECRET=IsphaTiY7x44JJfwn08RRrGrJ1EzqxE1BxksGYhIAZQb0DZ3TwLLRFFNTgFP3DUR
+BINANCE_TESTNET=true
+
+# =====================================
+# PERFORMANCE & MONITORING
+# =====================================
+MAX_WORKERS=4
+POOL_SIZE=20
+MAX_OVERFLOW=30
+TIMEOUT=60
+PROMETHEUS_PORT=9091
+LOG_LEVEL=INFO
+ENABLE_RATE_LIMITING=true
+REQUESTS_PER_MINUTE=1000
+
+# =====================================
+# SECURITY & CORS (UPDATE DOMAIN)
+# =====================================
+CORS_ORIGINS=["https://yourdomain.com","https://www.yourdomain.com","https://your-app.ondigitalocean.app"]
+TRUSTED_HOSTS=["yourdomain.com","www.yourdomain.com","your-app.ondigitalocean.app"]
+USE_SSL=true
+TZ=UTC
+
+# =====================================
+# DIGITAL OCEAN APP PLATFORM FORMAT
+# (Copy below for bulk import)
+# =====================================
+
+DATABASE_URL=postgresql://doadmin:AVNS_8hBXKk-VUdKxoy9IVNB@quantum-do-user-23093341-0.g.db.ondigitalocean.com:25060/defaultdb?sslmode=require
+REDIS_URL=redis://default:AVNS_XGsjxUE8pWuMIlwOoJa@cachequantum-do-user-23093341-0.g.db.ondigitalocean.com:25061
+JWT_SECRET=AGadbg1aZwoxmMeiNfhEZ2WnMvi9qOUxMLh7FfldzS6Us8ZtdjwmIjrj0QiOeKIF
+ENCRYPTION_KEY=79c2677563923fb222eba9518d1f52fc
+SECRET_KEY=3FK7OPPvatq8r9acm2zbomQoPc0NaiJwIrPP0POUdijDILnu
+ENVIRONMENT=production
+TRADING_MODE=paper
+API_PORT=8000
+DEBUG=false
+PAPER_TRADING=true
+ENABLE_AUTONOMOUS_TRADING=true
+BINANCE_TESTNET=true
+BINANCE_API_KEY=Qezz1H5udZpJt5C2u4l8dBNbncZirzI00giRuymmv9X8FjXCUZi1EoIWqkj2bjN4
+BINANCE_API_SECRET=IsphaTiY7x44JJfwn08RRrGrJ1EzqxE1BxksGYhIAZQb0DZ3TwLLRFFNTgFP3DUR
+CORS_ORIGINS=["https://your-app.ondigitalocean.app"]
+MAX_WORKERS=4
+LOG_LEVEL=INFO
+TZ=UTC

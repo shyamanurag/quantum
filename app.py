@@ -17,7 +17,11 @@ from enum import Enum
 
 # Load environment variables FIRST
 from dotenv import load_dotenv
-load_dotenv('local-production.env')  # Load your real API keys
+# Try to load local env file, but don't fail if it doesn't exist (for DO deployment)
+try:
+    load_dotenv('local-production.env')  # Load your real API keys
+except FileNotFoundError:
+    pass  # Environment variables will be provided by Digital Ocean
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, Depends, Request, BackgroundTasks
@@ -119,7 +123,7 @@ class AppConfig(BaseSettings):
     app_name: str = "Quantum Crypto Trading System"
     version: str = "2.0.0"
     host: str = "0.0.0.0"
-    port: int = 8000
+    port: int = int(os.getenv("PORT", "8000"))  # Use DO's PORT or default to 8000
     debug: bool = False
     
     # CORS settings

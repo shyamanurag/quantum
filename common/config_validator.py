@@ -330,15 +330,15 @@ class ConfigValidator:
                 "max_position_value": 50000000.0,
                 "foreign_investment_limit_percent": 49.0
             },
-            "brokers": {
-                "zerodha": {
-                    "name": "zerodha",
-                    "api_key": "your_zerodha_api_key",
-                    "api_secret": "your_zerodha_api_secret",
-                    "base_url": "https://api.kite.trade",
+            "crypto_exchanges": {
+                "binance": {
+                    "name": "binance",
+                    "api_key": "your_binance_api_key",
+                    "api_secret": "your_binance_api_secret",
+                    "base_url": "https://testnet.binance.vision",
                     "timeout_seconds": 30,
-                    "rate_limit_per_minute": 60,
-                    "sandbox_mode": False
+                    "rate_limit_per_minute": 1200,
+                    "testnet_mode": True
                 }
             },
             "timezone": "Asia/Kolkata",

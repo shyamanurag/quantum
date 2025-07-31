@@ -54,14 +54,15 @@ trading:
   risk_per_trade_percent: 1.0
   default_stop_loss_percent: 2.0
 
-# Broker Configuration (Isolated from Production)
-brokers:
-  zerodha:
-    # These are example credentials - replace with your own for testing
-    api_key: your_zerodha_api_key_here
-    api_secret: your_zerodha_api_secret_here
-    sandbox_mode: true
+# Crypto Exchange Configuration (Testnet Only)
+crypto_exchanges:
+  binance:
+    # Binance testnet credentials for crypto trading
+    api_key: your_binance_testnet_api_key_here
+    api_secret: your_binance_testnet_api_secret_here
+    testnet_mode: true
     paper_trading: true
+    autonomous_trading: true
 
 # Market Data Configuration (Real APIs Only)
 market_data:
