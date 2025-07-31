@@ -132,9 +132,6 @@ class PositionManager:
         except Exception as e:
             logger.error(f"Error getting portfolio summary: {e}")
             return {}
-
-# Alias for compatibility with API imports
-ProductionPositionManager = PositionManager
     
     async def _update_portfolio_value(self):
         """Update portfolio value using REAL calculation from shares app"""
@@ -152,3 +149,6 @@ ProductionPositionManager = PositionManager
             
         except Exception as e:
             logger.error(f"Error updating portfolio value: {e}")
+
+# Alias for compatibility with API imports
+ProductionPositionManager = PositionManager
