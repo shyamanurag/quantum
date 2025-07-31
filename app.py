@@ -522,6 +522,12 @@ def create_app() -> FastAPI:
 # Create the application instance
 app = create_app()
 
+# Add root route to serve dashboard
+@app.get("/", response_class=HTMLResponse)
+async def root():
+    """Root endpoint - serve trading dashboard"""
+    return await get_dashboard()
+
 # Additional route registrations for simple mode
 if TRADING_MODE == TradingMode.SIMPLE:
     from pydantic import BaseModel
