@@ -203,10 +203,17 @@ class TradingOrchestrator:
         self.last_heartbeat = None
         self.market_data = {}
         
-        # Signal tracking
+        # Signal tracking with production components
         self.signal_stats = SignalStats()
         self.pending_signals = []
         self.processed_signals = []
+        
+        # Production components from shares system
+        self.signal_deduplicator = None
+        self.order_rate_limiter = None
+        self.capital_sync = None
+        self.intelligent_symbol_manager = None
+        self.production_order_manager = None
         
         # Component status
         self.component_status = {
@@ -279,6 +286,9 @@ class TradingOrchestrator:
             # Initialize crypto client
             await self._initialize_crypto_client()
             
+            # Initialize production components from shares system
+            await self._initialize_production_components()
+            
             # Load trading strategies
             await self._load_strategies()
             
@@ -324,6 +334,56 @@ class TradingOrchestrator:
                 
         except Exception as e:
             logger.error(f"❌ Crypto client initialization failed: {e}")
+    
+    async def _initialize_production_components(self):
+        """Initialize production components from shares system"""
+        try:
+            # Initialize Signal Deduplicator
+            from .signal_deduplicator import crypto_signal_deduplicator
+            self.signal_deduplicator = crypto_signal_deduplicator
+            logger.info("✅ Signal Deduplicator initialized")
+            
+            # Initialize Order Rate Limiter
+            from .crypto_order_rate_limiter import crypto_order_rate_limiter
+            self.order_rate_limiter = crypto_order_rate_limiter
+            logger.info("✅ Order Rate Limiter initialized")
+            
+            # Initialize Capital Sync
+            from .crypto_capital_sync import CryptoDailyCapitalSync
+            self.capital_sync = CryptoDailyCapitalSync(orchestrator=self)
+            logger.info("✅ Capital Sync initialized")
+            
+            # Start daily capital sync scheduler
+            asyncio.create_task(self.capital_sync.schedule_daily_sync())
+            logger.info("✅ Daily capital sync scheduler started")
+            
+            # Initialize Intelligent Symbol Manager
+            from .crypto_intelligent_symbol_manager import start_crypto_intelligent_management
+            await start_crypto_intelligent_management()
+            self.intelligent_symbol_manager = await self._get_intelligent_symbol_manager()
+            logger.info("✅ Intelligent Symbol Manager initialized")
+            
+            # Initialize Production Order Manager
+            from ..orders.crypto_production_order_manager import initialize_crypto_order_manager
+            self.production_order_manager = await initialize_crypto_order_manager(self.config)
+            await self.production_order_manager.initialize(
+                binance_client=self.crypto_client,
+                redis_client=None,  # TODO: Add Redis client
+                risk_manager=self.risk_manager
+            )
+            logger.info("✅ Production Order Manager initialized")
+            
+        except Exception as e:
+            logger.error(f"❌ Production components initialization failed: {e}")
+    
+    async def _get_intelligent_symbol_manager(self):
+        """Get intelligent symbol manager instance"""
+        try:
+            from .crypto_intelligent_symbol_manager import get_crypto_intelligent_manager
+            return await get_crypto_intelligent_manager()
+        except Exception as e:
+            logger.error(f"❌ Error getting intelligent symbol manager: {e}")
+            return None
     
     async def _setup_event_subscriptions(self):
         """Setup event subscriptions for component communication"""
@@ -682,17 +742,34 @@ class TradingOrchestrator:
                 await asyncio.sleep(15.0)
     
     async def _process_pending_signals(self):
-        """Process pending trading signals"""
+        """Process pending trading signals with production safeguards"""
         try:
             if not self.pending_signals:
                 return
             
-            # Process signals in batches
-            batch_size = 10
-            signals_to_process = self.pending_signals[:batch_size]
+            # 🚨 PRODUCTION: Deduplicate signals first
+            if self.signal_deduplicator:
+                deduplicated_signals = await self.signal_deduplicator.process_signals(self.pending_signals)
+                logger.info(f"📊 Signal deduplication: {len(self.pending_signals)} → {len(deduplicated_signals)}")
+                signals_to_process = deduplicated_signals[:10]  # Process max 10 at a time
+            else:
+                signals_to_process = self.pending_signals[:10]
             
             for signal in signals_to_process:
                 try:
+                    # 🚨 PRODUCTION: Check order rate limits
+                    if self.order_rate_limiter:
+                        rate_check = await self.order_rate_limiter.can_place_order(
+                            signal.get("symbol", ""),
+                            signal.get("action", "BUY"),
+                            signal.get("quantity", 0),
+                            signal.get("price", 0)
+                        )
+                        
+                        if not rate_check.get("allowed", False):
+                            logger.warning(f"🚫 Signal rate limited: {rate_check.get('message')}")
+                            continue
+                    
                     # Validate signal with risk manager
                     if self.risk_manager:
                         risk_check = await self.risk_manager.validate_trade(
@@ -705,15 +782,50 @@ class TradingOrchestrator:
                             logger.warning(f"🚨 Signal rejected by risk manager: {risk_check.get('reason')}")
                             continue
                     
-                    # Execute signal through trade engine
-                    if self.trade_engine and self.trade_engine.order_manager:
-                        result = await self.trade_engine.order_manager.place_order(**signal)
-                        
-                        if result.get("success"):
-                            self.signal_stats.total_successful += 1
-                            logger.info(f"✅ Signal executed: {signal.get('symbol')}")
+                    # 🚨 PRODUCTION: Execute signal through production order manager first
+                    execution_result = None
+                    if self.production_order_manager:
+                        try:
+                            # Create crypto order from signal
+                            crypto_order = await self._create_crypto_order_from_signal(signal)
+                            if crypto_order:
+                                order_id = await self.production_order_manager.place_crypto_order("STRATEGY", crypto_order)
+                                execution_result = {"success": True, "order_id": order_id}
+                                logger.info(f"✅ Signal executed via Production Order Manager: {signal.get('symbol')}")
+                        except Exception as e:
+                            logger.warning(f"⚠️ Production Order Manager failed: {e}")
+                            execution_result = {"success": False, "error": str(e)}
+                    
+                    # Fallback to trade engine if production order manager fails
+                    if not execution_result or not execution_result.get("success"):
+                        if self.trade_engine and self.trade_engine.order_manager:
+                            execution_result = await self.trade_engine.order_manager.place_order(**signal)
                         else:
-                            logger.warning(f"❌ Signal execution failed: {result.get('error')}")
+                            execution_result = {"success": False, "error": "No order execution method available"}
+                    
+                    # Handle execution result
+                    if execution_result and execution_result.get("success"):
+                        self.signal_stats.total_successful += 1
+                        logger.info(f"✅ Signal executed: {signal.get('symbol')}")
+                        
+                        # 🚨 PRODUCTION: Mark signal as executed to prevent duplicates
+                        if self.signal_deduplicator:
+                            await self.signal_deduplicator.mark_signal_executed(signal)
+                        
+                        # 🚨 PRODUCTION: Record successful order attempt
+                        if self.order_rate_limiter and rate_check:
+                            await self.order_rate_limiter.record_order_attempt(
+                                rate_check.get('signature', ''), True, signal.get("symbol")
+                            )
+                    else:
+                        logger.warning(f"❌ Signal execution failed: {execution_result.get('error') if execution_result else 'Unknown error'}")
+                        
+                        # 🚨 PRODUCTION: Record failed order attempt
+                        if self.order_rate_limiter and rate_check:
+                            await self.order_rate_limiter.record_order_attempt(
+                                rate_check.get('signature', ''), False, signal.get("symbol"), 
+                                execution_result.get('error') if execution_result else 'Unknown error'
+                            )
                     
                     self.signal_stats.total_processed += 1
                     
@@ -722,10 +834,44 @@ class TradingOrchestrator:
                     self.signal_stats.total_failed += 1
             
             # Remove processed signals
-            self.pending_signals = self.pending_signals[batch_size:]
+            self.pending_signals = self.pending_signals[len(signals_to_process):]
             
         except Exception as e:
             logger.error(f"Error in signal processing: {e}")
+    
+    async def _create_crypto_order_from_signal(self, signal: Dict):
+        """Create crypto order from trading signal"""
+        try:
+            from ..orders.crypto_production_order_manager import CryptoOrder, CryptoOrderType, CryptoOrderSide
+            
+            # Map signal action to crypto order side
+            side_map = {
+                'BUY': CryptoOrderSide.BUY,
+                'SELL': CryptoOrderSide.SELL
+            }
+            
+            side = side_map.get(signal.get('action', 'BUY').upper(), CryptoOrderSide.BUY)
+            
+            # Determine order type
+            order_type = CryptoOrderType.MARKET  # Default to market order
+            if signal.get('order_type') == 'LIMIT':
+                order_type = CryptoOrderType.LIMIT
+            
+            # Create crypto order
+            crypto_order = CryptoOrder(
+                symbol=signal.get('symbol', 'BTCUSDT'),
+                side=side,
+                order_type=order_type,
+                quantity=float(signal.get('quantity', 0.001)),
+                price=float(signal.get('entry_price', 0)) if signal.get('entry_price') else None,
+                strategy=signal.get('strategy', 'UNKNOWN')
+            )
+            
+            return crypto_order
+            
+        except Exception as e:
+            logger.error(f"❌ Error creating crypto order from signal: {e}")
+            return None
     
     async def _process_market_data(self):
         """Process market data for strategies"""
