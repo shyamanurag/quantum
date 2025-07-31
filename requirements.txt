@@ -4,6 +4,7 @@
 # Core Framework (Essential)
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
+gunicorn==21.2.0
 
 # Database & ORM (Essential)
 sqlalchemy==2.0.23
