@@ -161,10 +161,8 @@ class Settings(BaseSettings):
         description="Allowed CORS origins"
     )
     
-    # Zerodha
-    ZERODHA_API_KEY: Optional[str] = Field(None, description="Zerodha API key")
-    ZERODHA_API_SECRET: Optional[str] = Field(None, description="Zerodha API secret")
-    ZERODHA_USER_ID: Optional[str] = Field(None, description="Zerodha user ID")
+    # ZERODHA REMOVED - Crypto trading platform only
+    # Note: Zerodha configurations removed per user requirements
     
     # Binance
     BINANCE_API_KEY: Optional[str] = Field(None, description="Binance API key")
@@ -178,7 +176,7 @@ class Settings(BaseSettings):
             "max_risk_per_trade": 0.02,  # 2% per trade
             "max_daily_loss": 0.05,      # 5% daily loss limit
             "default_timeframe": "1m",
-            "default_provider": "zerodha"
+            "default_provider": "binance"
         },
         description="Trading orchestrator configuration"
     )

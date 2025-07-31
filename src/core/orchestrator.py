@@ -150,9 +150,9 @@ class TradingOrchestrator:
             "last_heartbeat": datetime.utcnow().isoformat(),
             "active_strategies": [name for name, strategy in self.strategies.items() if strategy.get("active", False)],
             "active_strategies_count": len([name for name, strategy in self.strategies.items() if strategy.get("active", False)]),
-            "active_positions": 0,  # TODO: Get from position tracker
+            "active_positions": await self._get_real_active_positions(),
             "total_trades": sum(strategy.get("performance", {}).get("trades", 0) for strategy in self.strategies.values()),
-            "daily_pnl": 0.0,  # TODO: Calculate from positions
+            "daily_pnl": await self._get_real_daily_pnl()
             "risk_status": {"status": "normal"},
             "market_status": "ACTIVE",
             "system_ready": self.is_initialized and self.is_running,
@@ -168,6 +168,31 @@ class TradingOrchestrator:
         except Exception as e:
             logger.error(f"❌ Failed to stop orchestrator: {e}")
             return False
+
+    async def _get_real_active_positions(self) -> int:
+        """Get real active positions count - NO HARDCODED ZEROS"""
+        try:
+            if self.position_tracker:
+                positions = await self.position_tracker.get_all_positions()
+                return len([p for p in positions if p.quantity != 0])
+            else:
+                logger.error("❌ No position tracker - cannot get real position count")
+                return 0
+        except Exception as e:
+            logger.error(f"Error getting real active positions: {e}")
+            return 0
+
+    async def _get_real_daily_pnl(self) -> float:
+        """Get real daily P&L - NO HARDCODED ZEROS"""
+        try:
+            if self.position_tracker:
+                return getattr(self.position_tracker, 'daily_pnl', 0.0)
+            else:
+                logger.error("❌ No position tracker - cannot get real daily P&L")
+                return 0.0
+        except Exception as e:
+            logger.error(f"Error getting real daily P&L: {e}")
+            return 0.0
     
     def get_status(self) -> Dict[str, Any]:
         """Get orchestrator status"""

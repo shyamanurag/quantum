@@ -107,6 +107,39 @@ class EnhancedCryptoNewsImpactScalper:
             logger.error(f"Error getting news signals: {e}")
             return []
 
+    async def _load_dynamic_symbol_keywords(self):
+        """Load symbol keywords dynamically from database - NO HARDCODED SYMBOLS"""
+        try:
+            if self.symbol_keywords:
+                return  # Already provided via config
+                
+            from ..core.database import get_db_session
+            from sqlalchemy import text
+            
+            async with get_db_session() as session:
+                result = await session.execute(text("""
+                    SELECT symbol, keywords FROM symbols 
+                    WHERE is_active = true 
+                    AND exchange = 'BINANCE' 
+                    AND keywords IS NOT NULL
+                    ORDER BY volume_24h DESC
+                """))
+                
+                symbol_rows = result.fetchall()
+                if symbol_rows:
+                    self.symbol_keywords = {}
+                    for row in symbol_rows:
+                        # Convert keywords string to list
+                        keywords = row.keywords.split(',') if row.keywords else []
+                        self.symbol_keywords[row.symbol] = [kw.strip().lower() for kw in keywords]
+                    
+                    logger.info(f"✅ Loaded dynamic symbol keywords for {len(self.symbol_keywords)} symbols")
+                else:
+                    logger.error("❌ No symbols with keywords found in database")
+                    
+        except Exception as e:
+            logger.error(f"Error loading dynamic symbol keywords: {e}")
+
     async def _monitor_rss_feeds(self):
         """Monitor RSS feeds for crypto news"""
         while True:

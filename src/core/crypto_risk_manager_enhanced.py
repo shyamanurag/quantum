@@ -275,16 +275,24 @@ class EnhancedCryptoRiskManager:
             return RiskMetrics(0, 0, 0, 0, 0, 0, 0, datetime.now())
 
     def _get_portfolio_value(self) -> float:
-        """Get current portfolio value"""
+        """Get current portfolio value - REAL DATA ONLY"""
         try:
-            # Simplified portfolio value calculation
-            total_value = 100000  # Assume $100k portfolio
+            logger.error("❌ HARDCODED $100K PORTFOLIO VALUE DETECTED!")
+            logger.error("❌ Previous portfolio calculations were completely fake!")
+            logger.error("❌ Risk calculations based on fake data are dangerous!")
             
-            # Add unrealized P&L
-            for position in self.current_positions.values():
-                total_value += position['unrealized_pnl']
+            # This must be connected to real portfolio tracker
+            if self.position_tracker:
+                try:
+                    real_value = getattr(self.position_tracker, 'total_portfolio_value', 0)
+                    if real_value > 0:
+                        return real_value
+                except:
+                    pass
             
-            return max(0, total_value)
+            # If no real data available, refuse to operate
+            logger.error("❌ NO REAL PORTFOLIO VALUE AVAILABLE - Risk manager disabled")
+            raise RuntimeError("Real portfolio value required - fake $100k value removed for safety")
             
         except Exception as e:
             logger.error(f"Error getting portfolio value: {e}")

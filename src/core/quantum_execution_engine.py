@@ -103,7 +103,11 @@ class QuantumExecutionEngine:
         # Market data
         self.market_microstructure = {}
         self.liquidity_pools = {}
-        self.execution_venues = ['binance', 'coinbase', 'kraken', 'ftx']  # Simulated
+        # REAL EXECUTION VENUES - NO SIMULATION
+        self.execution_venues = config.get('real_execution_venues', ['binance'])  # Only real venues
+        if not self.execution_venues:
+            logger.error("❌ NO REAL EXECUTION VENUES - Previous venues were simulated!")
+            logger.error("❌ Real exchange connections required for production trading")
         
         # Performance tracking
         self.orders_executed = 0
@@ -738,15 +742,19 @@ class QuantumExecutionEngine:
             raise RuntimeError(f"Failed to execute real order slice: {e}")
 
     def _calculate_real_slippage(self, symbol: str, quantity: float, side: str) -> float:
-        """Calculate real slippage based on market depth"""
+        """Calculate real slippage based on market depth - NO HARDCODED VALUES"""
         try:
-            # This would query real market depth data
-            # For now, return minimal slippage to prevent fake data
-            return 5.0  # 5 basis points minimum
+            logger.error("❌ HARDCODED SLIPPAGE VALUES DETECTED!")
+            logger.error("❌ Previous slippage calculations were fake!")
+            logger.error("❌ Real market depth data required for accurate slippage")
+            
+            # This must query real market depth from actual exchange
+            raise RuntimeError(f"Real market depth required for {symbol} - hardcoded slippage removed for honesty")
             
         except Exception as e:
             logger.error(f"Error calculating slippage: {e}")
-            return 10.0  # Conservative default
+            # Return error state rather than fake data
+            raise RuntimeError("Real slippage calculation required - fake values eliminated")
 
     def get_performance_metrics(self) -> Dict:
         """Get quantum execution performance metrics"""
