@@ -12,21 +12,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends libpq5 && rm -r
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy ONLY core app file
+# Copy main app file
 COPY app.py .
 
-# Create minimal directory structure
-RUN mkdir -p src/api src/core src/config config logs
+# Copy ALL source code (required for app.py imports)
+COPY src/ src/
 
-# Copy only essential files one by one
-COPY src/__init__.py src/
-COPY src/config/__init__.py src/config/
-COPY src/config/database.py src/config/
-COPY src/core/__init__.py src/core/
-COPY src/core/config.py src/core/
-
-# Essential config (if exists)
-COPY config/config.yaml config/
+# Copy configuration files
+COPY config/ config/
 
 # User setup
 RUN useradd app && chown -R app:app /app
