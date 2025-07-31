@@ -1,0 +1,75 @@
+# ULTRA-AGGRESSIVE EXCLUSION TO FIX SNAPSHOT FAILURE
+# Exclude large directories that cause build context bloat
+
+# Large Python directories (1.3GB total)
+Lib/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.backup
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Python cache files (found in src/)
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+**/*.backup
+**/*.py.backup
+
+# Large build directories
+frontend/node_modules/
+node_modules/
+dist/
+build/
+DLLs/
+Tools/
+Doc/
+
+# Git and IDE
+.git/
+.gitignore
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS and temp files
+.DS_Store
+Thumbs.db
+temp/
+tmp/
+*.tmp
+*.log
+
+# Documentation and misc
+docs/
+*.md
+README*
+CHANGELOG*
+LICENSE*
+.github/
+
+# Database and logs
+*.db
+*.sqlite
+*.sqlite3
+logs/
+backups/
+
+# Test and config
+.pytest_cache/
+.coverage
+.tox/
+*.cfg
+pytest.ini
+
+# Only include essential app files
+# (Docker will copy everything not excluded above) 
