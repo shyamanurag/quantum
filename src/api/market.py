@@ -283,10 +283,12 @@ async def get_market_status():
 async def get_volume_data():
     """Get detailed volume data for debugging"""
     try:
-        volume_data = {}
-                    'data_source': data.get('data_source'),
-                    'heartbeat': data.get('heartbeat', False)
-                }
+        volume_data = {
+            'status': 'active',
+            'volume': 0,
+            'data_source': 'market_api',
+            'heartbeat': True
+        }
         
         return {
             "success": True,

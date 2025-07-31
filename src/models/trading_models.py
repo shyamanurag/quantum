@@ -261,6 +261,7 @@ class User(Base):
     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
     
     # Relationships
+    portfolios = relationship("Portfolio", back_populates="user")
     positions = relationship("Position", back_populates="user")
     trades = relationship("Trade", back_populates="user")
     orders = relationship("Order", back_populates="user")
