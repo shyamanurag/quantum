@@ -1,8 +1,17 @@
 # edge/arbitrage_engine.py
 """
-Cross-Chain Arbitrage Engine - Risk-Free Profit Detection
-Finds arbitrage opportunities across multiple exchanges and blockchains
+Cross-Chain Arbitrage Engine - DISABLED TO PREVENT LOG SPAM
+This engine was generating fake $153M+ profits and spamming logs.
+Use arbitrage_engine_DISABLED.py instead for clean operation.
 """
+
+# CRITICAL: Import the disabled version to stop log spam
+from .arbitrage_engine_DISABLED import ArbitrageEngine, get_arbitrage_engine
+
+# Re-export for compatibility
+__all__ = ['ArbitrageEngine', 'get_arbitrage_engine']
+
+# The rest of this file is disabled to prevent fake profit spam
 
 import logging
 import asyncio
