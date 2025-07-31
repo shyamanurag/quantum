@@ -420,33 +420,16 @@ class CryptoRegimeAdaptiveController:
             logger.error(f"Error getting performance metrics: {e}")
             return {}
 
-    async def simulate_regime_change(self, target_regime: str):
-        """Simulate regime change for testing"""
+    async def force_regime_classification(self, target_regime: str):
+        """Force regime classification based on real market data - NO SIMULATION"""
         try:
-            regime_map = {
-                'bull': MarketRegime.BULL_MARKET,
-                'bear': MarketRegime.BEAR_MARKET,
-                'sideways': MarketRegime.SIDEWAYS,
-                'alt_season': MarketRegime.ALT_SEASON,
-                'uncertainty': MarketRegime.UNCERTAINTY
-            }
+            logger.error("❌ REGIME SIMULATION DISABLED - Only real market-driven regime changes allowed")
+            logger.error("❌ Use real market conditions to trigger regime changes")
+            logger.error("❌ Artificial regime forcing violates 'no simulation' requirement")
             
-            if target_regime in regime_map:
-                new_regime = regime_map[target_regime]
-                await self._on_regime_change(new_regime)
-                
-                # Update state
-                self.current_regime_state = RegimeState(
-                    current_regime=new_regime,
-                    confidence=0.8,
-                    btc_dominance=45.0,
-                    fear_greed_index=50.0,
-                    volatility_regime="medium",
-                    trend_strength=0.1,
-                    last_updated=datetime.now()
-                )
-                
-                logger.info(f"🎯 Simulated regime change to {target_regime}")
+            # Force real regime analysis instead
+            actual_regime = await self._classify_market_regime()
+            logger.info(f"✅ Real market regime detected: {actual_regime}")
             
         except Exception as e:
             logger.error(f"Error simulating regime change: {e}") 

@@ -382,8 +382,8 @@ class EnhancedCryptoConfluenceAmplifier:
             logger.error(f"Error getting confluence history: {e}")
             return []
 
-    async def simulate_confluence_signal(self, symbol: str = "BTCUSDT") -> Dict:
-        """Simulate a confluence signal for testing"""
+    async def generate_real_confluence_signal(self, symbol: str) -> Dict:
+        """Generate a REAL confluence signal from live data - NO SIMULATION"""
         try:
             # Generate real confluence signal
             market_data = await self.get_latest_market_data(symbol)

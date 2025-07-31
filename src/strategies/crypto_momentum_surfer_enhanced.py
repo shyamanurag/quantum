@@ -72,10 +72,11 @@ class EnhancedCryptoMomentumSurfer:
         self.ai_confidence_threshold = config.get('ai_confidence_threshold', 0.7)
         self.liquidation_hunt_enabled = config.get('liquidation_hunt_enabled', True)
         
-        # Crypto pairs to trade
-        self.crypto_pairs = config.get('crypto_pairs', [
-            'BTCUSDT', 'ETHUSDT', 'ADAUSDT', 'DOTUSDT', 'LINKUSDT'
-        ])
+        # Crypto pairs to trade - DYNAMICALLY LOADED FROM DATABASE
+        self.crypto_pairs = config.get('crypto_pairs', [])
+        if not self.crypto_pairs:
+            logger.error("❌ NO HARDCODED SYMBOLS: crypto_pairs must be provided via config or database")
+            # Will be loaded dynamically from active symbols in database
         
         # Enhanced state tracking
         self.momentum_states = {}
@@ -106,7 +107,7 @@ class EnhancedCryptoMomentumSurfer:
             # Process each crypto pair with enhanced analysis
             for symbol in self.crypto_pairs:
                 try:
-                    # Get market data (simulated for now)
+                    # Get REAL market data - NO SIMULATION
                     market_data = await self._get_market_data(symbol)
                     if not market_data:
                         continue

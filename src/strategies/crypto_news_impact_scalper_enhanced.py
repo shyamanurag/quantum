@@ -45,14 +45,11 @@ class EnhancedCryptoNewsImpactScalper:
         self.rss_feeds = config.get('news_rss_feeds', [])
         self.news_apis = config.get('news_apis', {})
         
-        # Symbol mappings
-        self.symbol_keywords = {
-            'BTCUSDT': ['bitcoin', 'btc', 'cryptocurrency'],
-            'ETHUSDT': ['ethereum', 'eth', 'smart contract', 'defi'],
-            'ADAUSDT': ['cardano', 'ada'],
-            'DOTUSDT': ['polkadot', 'dot', 'parachain'],
-            'LINKUSDT': ['chainlink', 'link', 'oracle']
-        }
+        # Symbol mappings - DYNAMICALLY LOADED FROM DATABASE
+        self.symbol_keywords = config.get('symbol_keywords', {})
+        if not self.symbol_keywords:
+            logger.error("❌ NO HARDCODED SYMBOLS: symbol_keywords must be provided via config or database")
+            # Will be loaded dynamically from symbols table with keywords
         
         # News tracking
         self.news_buffer = deque(maxlen=500)
@@ -69,6 +66,9 @@ class EnhancedCryptoNewsImpactScalper:
             'surge', 'pump', 'moon', 'rocket', 'bullish', 'bearish',
             'adoption', 'regulation', 'banned', 'approved', 'partnership'
         ]
+        
+        # Initialize dynamic symbol loading
+        asyncio.create_task(self._load_dynamic_symbol_keywords())
         
         logger.info("Enhanced Crypto News Impact Scalper initialized")
 

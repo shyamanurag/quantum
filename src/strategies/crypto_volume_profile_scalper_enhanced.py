@@ -282,18 +282,19 @@ class EnhancedCryptoVolumeProfileScalper:
         """Monitor and update volume profiles"""
         while True:
             try:
-                # Simulate trade data
+                # REAL TRADE DATA ONLY - NO SIMULATION
                 # CRITICAL: NO HARD-CODED SYMBOLS - GET FROM DYNAMIC SOURCES
                 from ..core.database import get_db_session
                 
                 async with get_db_session() as session:
                     # Get active symbols from database
-                    result = await session.execute("""
+                    from sqlalchemy import text
+                    result = await session.execute(text("""
                         SELECT symbol FROM symbols 
                         WHERE is_active = true AND exchange = 'BINANCE'
                         ORDER BY volume_24h DESC 
                         LIMIT 5
-                    """)
+                    """))
                     
                     symbol_rows = result.fetchall()
                     if not symbol_rows:
