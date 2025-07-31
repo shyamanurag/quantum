@@ -5,7 +5,7 @@ import logging
 
 # Import PRODUCTION risk manager (enterprise-grade)
 from src.core.crypto_risk_manager_enhanced import EnhancedCryptoRiskManager
-from src.core.position_manager import ProductionPositionManager
+from src.core.position_manager import PositionManager
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +13,7 @@ router = APIRouter()
 
 # Global production risk manager instance
 risk_manager = None
-position_manager = ProductionPositionManager()
+position_manager = PositionManager()
 
 async def get_risk_manager():
     """Get or initialize production risk manager"""

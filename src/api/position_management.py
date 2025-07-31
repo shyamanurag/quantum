@@ -4,14 +4,14 @@ from datetime import datetime
 import logging
 
 # Import our PRODUCTION position manager (enterprise-grade)
-from src.core.position_manager import ProductionPositionManager
+from src.core.position_manager import PositionManager
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
 # Initialize PRODUCTION position manager (no placeholders)
-position_manager = ProductionPositionManager()
+position_manager = PositionManager()
 
 @router.get("/")
 async def get_all_positions():
