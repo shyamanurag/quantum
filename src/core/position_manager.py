@@ -49,7 +49,7 @@ class PositionManager:
             
             # Recalculate portfolio value (real calculation)
             await self._update_portfolio_value()
-            logger.info(f"✅ Added position: {symbol} {quantity}@{price}")
+            logger.info(f"✅ Added position: {symbol} {quantity}@{price} (Avg: ${self.positions[symbol]['avg_price']:.2f})")
             return True
             
         except Exception as e:
@@ -72,6 +72,7 @@ class PositionManager:
             
             # Update portfolio value
             await self._update_portfolio_value()
+            logger.debug(f"Updated {symbol}: Price ${price:.2f}, P&L ${position['unrealized_pnl']:.2f}")
             return True
             
         except Exception as e:
@@ -85,6 +86,52 @@ class PositionManager:
     async def get_all_positions(self):
         """Get all positions - REAL implementation"""
         return list(self.positions.values())
+    
+    async def close_position(self, symbol, exit_price):
+        """Close position and calculate realized P&L - REAL implementation"""
+        try:
+            if symbol not in self.positions:
+                logger.warning(f"Cannot close position {symbol} - position not found")
+                return False
+            
+            position = self.positions[symbol]
+            
+            # Calculate realized P&L (real calculation)
+            realized_pnl = (exit_price - position['avg_price']) * position['quantity']
+            self.realized_pnl += realized_pnl
+            
+            # Remove position
+            del self.positions[symbol]
+            
+            # Update portfolio value
+            await self._update_portfolio_value()
+            
+            logger.info(f"✅ Closed position: {symbol} P&L: ${realized_pnl:.2f}")
+            return realized_pnl
+            
+        except Exception as e:
+            logger.error(f"Error closing position {symbol}: {e}")
+            return False
+    
+    def get_portfolio_summary(self):
+        """Get comprehensive portfolio summary - REAL data only"""
+        try:
+            active_positions = len(self.positions)
+            total_unrealized = sum(pos.get('unrealized_pnl', 0) for pos in self.positions.values())
+            
+            return {
+                'total_portfolio_value': self.total_portfolio_value,
+                'realized_pnl': self.realized_pnl,
+                'unrealized_pnl': total_unrealized,
+                'active_positions': active_positions,
+                'positions': self.positions,
+                'net_pnl': self.realized_pnl + total_unrealized,
+                'last_updated': datetime.now().isoformat()
+            }
+            
+        except Exception as e:
+            logger.error(f"Error getting portfolio summary: {e}")
+            return {}
     
     async def _update_portfolio_value(self):
         """Update portfolio value using REAL calculation from shares app"""
