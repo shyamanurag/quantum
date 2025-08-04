@@ -62,7 +62,7 @@ api_router.include_router(daily_auth_workflow.router, prefix="/daily-auth", tags
 api_router.include_router(simple_daily_auth.router, prefix="/simple-auth", tags=["Simple Daily Auth"])
 api_router.include_router(strategy_management.router, prefix="/strategies", tags=["Strategy Management"])
 api_router.include_router(performance.router, prefix="/performance", tags=["Performance"])
-api_router.include_router(recommendations.router, prefix="/recommendations", tags=["Recommendations"])
+# api_router.include_router(recommendations.router, prefix="/recommendations", tags=["Recommendations"])  # Disabled due to circular import
 
 # Include Digital Ocean logs monitoring API  
 api_router.include_router(digital_ocean_logs.router, prefix="/do-logs", tags=["Digital Ocean Logs"])
