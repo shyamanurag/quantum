@@ -374,22 +374,6 @@ class EnhancedCryptoVolumeProfileScalper:
             logger.error(f"Error getting market data for {symbol}: {e}")
             return None
 
-                    current_price = market_data.get('close_price')
-                    if not current_price:
-                        continue
-                    
-                    # Generate real trading signal
-                    signal = await self._generate_real_signal(symbol, current_price, market_data)
-                    
-                    if signal and signal.action != 'HOLD':
-                        logger.info(f"Generated {signal.action} signal for {symbol} at {current_price}")
-                    
-                await asyncio.sleep(10)  # Update every 10 seconds
-                
-            except Exception as e:
-                logger.error(f"Error monitoring volume profiles: {e}")
-                await asyncio.sleep(60)
-
     async def _detect_whale_orders(self):
         """Detect and alert on whale orders"""
         while True:
