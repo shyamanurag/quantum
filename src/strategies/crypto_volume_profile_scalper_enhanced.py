@@ -357,7 +357,7 @@ class EnhancedCryptoVolumeProfileScalper:
         except Exception as e:
             logger.error(f"Error getting market data for {symbol}: {e}")
             return None
-                    
+
                     current_price = market_data.get('close_price')
                     if not current_price:
                         continue
