@@ -337,14 +337,15 @@ class EnhancedCryptoVolatilityExplosion:
                 from ..core.database import get_db_session
                 
                 async with get_db_session() as session:
-                    result = await session.execute("""
+                    from sqlalchemy import text
+                    result = await session.execute(text("""
                         SELECT DISTINCT symbol 
                         FROM crypto_market_data 
                         WHERE timestamp >= NOW() - INTERVAL '1 hour'
                         AND close_price > 0
                         ORDER BY symbol
                         LIMIT 10
-                    """)
+                    """))
                     
                     symbols = [row.symbol for row in result.fetchall()]
                 
