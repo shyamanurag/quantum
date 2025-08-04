@@ -27,7 +27,7 @@ from . import (
     simple_daily_auth,
     strategy_management,
     performance,
-    recommendations,
+    # recommendations,  # Temporarily disabled due to circular import
     digital_ocean_logs  # Added real-time log monitoring
 )
 

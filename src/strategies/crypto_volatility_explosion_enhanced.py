@@ -525,14 +525,15 @@ class EnhancedCryptoVolatilityExplosion:
             
             async with get_db_session() as session:
                 # Get recent price data for volatility calculation
-                result = await session.execute("""
+                from sqlalchemy import text
+                result = await session.execute(text("""
                     SELECT close_price, high_price, low_price, timestamp
                     FROM crypto_market_data 
-                    WHERE symbol = %s 
+                    WHERE symbol = :symbol 
                     AND timestamp >= NOW() - INTERVAL '1 hour'
                     ORDER BY timestamp DESC
                     LIMIT 60
-                """, (symbol,))
+                """), {"symbol": symbol})
                 
                 rows = result.fetchall()
                 if len(rows) < 20:

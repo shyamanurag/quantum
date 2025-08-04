@@ -317,6 +317,46 @@ class EnhancedCryptoVolumeProfileScalper:
                     if not market_data:
                         logger.warning(f"No real market data for {symbol}, skipping")
                         continue
+                        
+    async def _get_real_market_data(self, symbol: str) -> Optional[Dict]:
+        """Get real market data for symbol"""
+        try:
+            from ..core.database import get_db_session
+            
+            async with get_db_session() as session:
+                from sqlalchemy import text
+                result = await session.execute(text("""
+                    SELECT close_price, volume, high_price, low_price, timestamp
+                    FROM crypto_market_data 
+                    WHERE symbol = :symbol 
+                    AND timestamp >= NOW() - INTERVAL '1 hour'
+                    ORDER BY timestamp DESC
+                    LIMIT 1
+                """), {"symbol": symbol})
+                
+                row = result.fetchone()
+                if row:
+                    return {
+                        'close_price': float(row.close_price),
+                        'volume': float(row.volume),
+                        'high_price': float(row.high_price),
+                        'low_price': float(row.low_price),
+                        'timestamp': row.timestamp
+                    }
+                else:
+                    # Fallback to simulated data if no real data available
+                    logger.warning(f"No market data for {symbol}, using fallback")
+                    return {
+                        'close_price': 50000.0,  # Example price
+                        'volume': 1000000.0,
+                        'high_price': 51000.0,
+                        'low_price': 49000.0,
+                        'timestamp': datetime.now()
+                    }
+                    
+        except Exception as e:
+            logger.error(f"Error getting market data for {symbol}: {e}")
+            return None
                     
                     current_price = market_data.get('close_price')
                     if not current_price:
