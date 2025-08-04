@@ -302,13 +302,12 @@ class EnhancedCryptoVolumeProfileScalper:
                     # LIMIT 5
                     # """))
                     
-                    symbol_rows = result.fetchall()
-                    if not symbol_rows:
-                        logger.error("No active symbols found in database")
+                    # Use hardcoded symbols instead of database query
+                    dynamic_symbols = hardcoded_symbols
+                    if not dynamic_symbols:
+                        logger.error("No symbols configured")
                         await asyncio.sleep(60)
                         continue
-                    
-                    dynamic_symbols = [row.symbol for row in symbol_rows]
                 
                 logger.info(f"Running volume analysis with real symbols: {dynamic_symbols}")
                 
