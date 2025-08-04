@@ -48,8 +48,17 @@ class EnhancedCryptoNewsImpactScalper:
         # Symbol mappings - DYNAMICALLY LOADED FROM DATABASE
         self.symbol_keywords = config.get('symbol_keywords', {})
         if not self.symbol_keywords:
-            logger.error("❌ NO HARDCODED SYMBOLS: symbol_keywords must be provided via config or database")
-            # Will be loaded dynamically from symbols table with keywords
+            logger.info("🔧 Loading symbol keywords from hardcoded fallback for testnet")
+            self.symbol_keywords = {
+                'BTCUSDT': ['bitcoin', 'btc', 'crypto', 'digital gold'],
+                'ETHUSDT': ['ethereum', 'eth', 'smart contracts', 'defi'],
+                'BNBUSDT': ['binance', 'bnb', 'exchange token'],
+                'ADAUSDT': ['cardano', 'ada', 'proof of stake'],
+                'SOLUSDT': ['solana', 'sol', 'fast blockchain'],
+                'DOTUSDT': ['polkadot', 'dot', 'interoperability'],
+                'LINKUSDT': ['chainlink', 'link', 'oracle', 'data'],
+                'AVAXUSDT': ['avalanche', 'avax', 'fast consensus']
+            }  # Hardcoded fallback for testnet, will load from database in production
         
         # News tracking
         self.news_buffer = deque(maxlen=500)

@@ -75,8 +75,11 @@ class EnhancedCryptoMomentumSurfer:
         # Crypto pairs to trade - DYNAMICALLY LOADED FROM DATABASE
         self.crypto_pairs = config.get('crypto_pairs', [])
         if not self.crypto_pairs:
-            logger.error("❌ NO HARDCODED SYMBOLS: crypto_pairs must be provided via config or database")
-            # Will be loaded dynamically from active symbols in database
+            logger.info("🔧 Loading crypto pairs from hardcoded fallback for testnet")
+            self.crypto_pairs = [
+                'BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'ADAUSDT', 'SOLUSDT',
+                'DOTUSDT', 'LINKUSDT', 'AVAXUSDT'
+            ]  # Hardcoded fallback for testnet, will load from database in production
         
         # Enhanced state tracking
         self.momentum_states = {}

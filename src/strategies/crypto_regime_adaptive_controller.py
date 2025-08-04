@@ -253,12 +253,13 @@ class CryptoRegimeAdaptiveController:
             from ..core.database import get_db_session
             
             async with get_db_session() as session:
-                result = await session.execute("""
+                from sqlalchemy import text
+                result = await session.execute(text("""
                     SELECT AVG(ABS((high_price - low_price) / close_price)) as volatility
                     FROM crypto_market_data 
                     WHERE timestamp >= NOW() - INTERVAL '24 hours'
                     AND close_price > 0
-                """)
+                """))
                 
                 row = result.fetchone()
                 if row and row.volatility is not None:
