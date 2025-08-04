@@ -289,16 +289,18 @@ class EnhancedCryptoVolumeProfileScalper:
                 async with get_db_session() as session:
                     # Get active symbols from database
                     from sqlalchemy import text
-                                            # Hardcoded crypto symbols instead of database query
-                        # TODO: Create symbols table or use from config
-                        hardcoded_symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'ADAUSDT', 'SOLUSDT']
-                        logger.info(f"Using hardcoded crypto symbols: {hardcoded_symbols}")
-                        # result = await session.execute(text("""
-                        # SELECT symbol FROM symbols 
-                        # WHERE is_active = true AND exchange = 'BINANCE'
-                        # ORDER BY volume_24h DESC 
-                        # LIMIT 5
-                        # """))
+                    
+                    # Hardcoded crypto symbols instead of database query
+                    # TODO: Create symbols table or use from config
+                    hardcoded_symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'ADAUSDT', 'SOLUSDT']
+                    logger.info(f"Using hardcoded crypto symbols: {hardcoded_symbols}")
+                    
+                    # result = await session.execute(text("""
+                    # SELECT symbol FROM symbols 
+                    # WHERE is_active = true AND exchange = 'BINANCE'
+                    # ORDER BY volume_24h DESC 
+                    # LIMIT 5
+                    # """))
                     
                     symbol_rows = result.fetchall()
                     if not symbol_rows:

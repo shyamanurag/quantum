@@ -1,7 +1,11 @@
 """
-Arbitrage Engine - PERMANENTLY DISABLED
+Arbitrage Engine - PERMANENTLY DISABLED v2.0 - CACHE BUSTER
 This module has been disabled to prevent log spam and fake profit calculations.
 If real arbitrage is needed in the future, implement from scratch with proper exchange APIs.
+
+VERSION: 2.0.0 - Cache Busting Fix for Digital Ocean
+ISSUE: Old cached bytecode was still running fake profit spam
+FIX: Force recompilation by changing source code
 """
 
 import logging
