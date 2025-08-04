@@ -317,7 +317,23 @@ class EnhancedCryptoVolumeProfileScalper:
                     if not market_data:
                         logger.warning(f"No real market data for {symbol}, skipping")
                         continue
-                        
+                    
+                    current_price = market_data.get('close_price')
+                    if not current_price:
+                        continue
+                    
+                    # Generate real trading signal
+                    signal = await self._generate_real_signal(symbol, current_price, market_data)
+                    
+                    if signal and signal.action != 'HOLD':
+                        logger.info(f"Generated {signal.action} signal for {symbol} at {current_price}")
+                    
+                await asyncio.sleep(10)  # Update every 10 seconds
+                
+            except Exception as e:
+                logger.error(f"Error monitoring volume profiles: {e}")
+                await asyncio.sleep(60)
+
     async def _get_real_market_data(self, symbol: str) -> Optional[Dict]:
         """Get real market data for symbol"""
         try:
