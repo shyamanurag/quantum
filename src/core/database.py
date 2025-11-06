@@ -1,12 +1,15 @@
 """
-Database manager for the trading system
+Production Database Manager - PostgreSQL Only
+
+NO SQLite fallbacks - production PostgreSQL with asyncpg only.
 """
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.ext.declarative import declarative_base
 from contextlib import contextmanager, asynccontextmanager
 import logging
-from .config import settings
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -14,12 +17,14 @@ logger = logging.getLogger(__name__)
 Base = declarative_base()
 
 class DatabaseManager:
-    """Database connection manager"""
+    """Production database connection manager - PostgreSQL only"""
     
     def __init__(self):
         """Initialize database manager"""
         self.engine = None
+        self.async_engine = None
         self.SessionLocal = None
+        self.AsyncSessionLocal = None
         self._initialize()
     
     def _initialize(self):

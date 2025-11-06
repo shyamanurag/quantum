@@ -19,6 +19,7 @@ python-jose[cryptography]==3.3.0
 PyJWT==2.8.0
 cryptography==41.0.7
 python-multipart==0.0.6
+bcrypt==4.1.2
 
 # HTTP Client & WebSocket (Essential)
 httpx==0.25.2
@@ -64,6 +65,6 @@ passlib[bcrypt]==1.7.4
 # Lightweight ML essentials (Required by core system files)
 scipy==1.11.4
 
-# Development/Testing (Optional - comment out for production)
-# pytest==7.4.3
-# pytest-asyncio==0.21.1
+# Development/Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1

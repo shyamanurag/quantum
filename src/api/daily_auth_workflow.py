@@ -400,13 +400,49 @@ async def submit_daily_token(
             
             await redis_client.close()
             
-            logger.info(f"Token stored in Redis for user {user_id}, expires at {expiry}")
+            logger.info(f"✅ Token stored in Redis for user {user_id}, expires at {expiry}")
             
         except Exception as redis_error:
             logger.error(f"Failed to store token in Redis: {redis_error}")
             # Fallback to environment variables only
             os.environ['ZERODHA_ACCESS_TOKEN'] = access_token
             os.environ['ZERODHA_USER_ID'] = user_id
+        
+        # CRITICAL FIX: Force update ALL Zerodha client instances (clear cache)
+        logger.info("🔄 FORCING ZERODHA CLIENT REFRESH IN ALL INSTANCES...")
+        try:
+            # 1. Get singleton Zerodha client and force reinit
+            from brokers.zerodha import get_zerodha_client
+            zerodha_client = get_zerodha_client()
+            if zerodha_client.set_access_token(access_token, user_id):
+                logger.info("✅ [1/4] Singleton Zerodha client refreshed")
+            
+            # 2. Force refresh orchestrator's reference
+            from src.core.orchestrator import orchestrator
+            if hasattr(orchestrator, 'zerodha_client'):
+                orchestrator.zerodha_client = get_zerodha_client()
+                logger.info("✅ [2/4] Orchestrator Zerodha reference refreshed")
+            
+            # 3. Force refresh trade engine's reference
+            if hasattr(orchestrator, 'trade_engine') and orchestrator.trade_engine:
+                if hasattr(orchestrator.trade_engine, 'zerodha_client'):
+                    orchestrator.trade_engine.zerodha_client = get_zerodha_client()
+                    logger.info("✅ [3/4] Trade engine Zerodha reference refreshed")
+            
+            # 4. Update multi-user manager if exists
+            try:
+                from src.core.multi_user_zerodha_manager import multi_user_manager
+                if hasattr(multi_user_manager, 'update_user_token'):
+                    multi_user_manager.update_user_token(user_id, access_token)
+                    logger.info("✅ [4/4] Multi-user manager refreshed")
+            except:
+                logger.info("ℹ️ [4/4] Multi-user manager not found (OK)")
+            
+            logger.info("✅ ALL ZERODHA INSTANCES REFRESHED - Cache cleared")
+            
+        except Exception as refresh_error:
+            logger.error(f"⚠️ Client refresh error: {refresh_error}")
+            # Continue anyway - token is in Redis
         
         # Start autonomous trading in background
         background_tasks.add_task(start_autonomous_trading_after_auth)
